@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+
+import argparse
+
+from pyinvest import auth, accounts, config
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--config', '-c', type=str, default='$HOME/config/pyinvest.json')
+parser.add_argument('--verbose', '-v', action='store_true')
+args = parser.parse_args()
+
+account_info = config.get_account_data(args.config)
+account_id = account_info['account_id']
+
+authentication = config.get_authentication_data(args.config)
+refresh_token, client_id = authentication['refresh_token'], authentication['client_id']
+
+access_token = auth.authenticate(refresh_token, client_id)
+
+account_info = accounts.get_account_info(account_id, access_token)
+positions = accounts.get_positions(account_id, access_token)
+
+total_account_value = account_info['currentBalances']['liquidationValue']
+available_cash = account_info['currentBalances']['cashAvailableForTrading']
+position_value = account_info['currentBalances']['longMarketValue']
+
+print("\n")
+print(f"Cash available for trading: ${available_cash}")
+print(f"Positions: ${position_value}")
+print(f"Total account value: ${total_account_value}")
+print("\n")
+
+if args.verbose:
+    for asset in positions:
+        symbol = asset['instrument']['symbol']
+        
+        if symbol == 'MMDA1':
+            continue  # Skip Money Market value
+
+        quantity = asset['longQuantity']
+        avg_price = asset['averagePrice']
+        market_value = asset['marketValue']
+        current_profit = asset['currentDayProfitLoss']
+        current_profit_pcnt = asset['currentDayProfitLossPercentage']
+        
+        print(f"Symbol: {symbol}, Long quantity: {quantity}, Market value: {market_value}")
+        print(f"Average price: {avg_price}")
+        print(f"Day gain/loss: {current_profit}, {current_profit_pcnt}")
+        print("------------------------------------------------------------------------------")
+
