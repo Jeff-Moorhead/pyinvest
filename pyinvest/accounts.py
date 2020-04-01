@@ -1,11 +1,5 @@
 import requests
 
-"""
-Significant keys: positions, unsettledCash, cashAvailableForTrading
-
-This would be better to refactor into a class. Look into the requests.Session class.
-"""
-
 
 def calculate_total_profit(shares, avg_cost, current_price):
     return round((current_price - avg_cost) * shares, 2)
