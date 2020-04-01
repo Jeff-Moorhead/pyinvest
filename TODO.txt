@@ -1,0 +1,3 @@
+Automate generation of new refresh token
+Automate installation of config file
+Write new script/module to automate order placing
