@@ -27,7 +27,7 @@ class TDAmeritradeClient:
     def get_positions(self):
         return self.get_account_info()['positions']
 
-    def place_order(self, symbol, quantity):
+    def place_market_order(self, symbol, quantity):
         URL = f"https://api.tdameritrade.com/v1/accounts/{self.account}/orders"
         params = {
             "orderType": "MARKET",
