@@ -13,8 +13,9 @@ def calculate_total_profit_percentage(shares, avg_cost, current_price):
 class TDAmeritradeClient:
     def __init__(self, access_token, account):
         self.account = account
+        self.access_token = access_token
         self.session = requests.Session()
-        self.session.headers = {'Authorization': f'Bearer {access_token}'}
+        self.session.headers = {"Authorization": f"Bearer {access_token}"}
 
     def get_account_info(self):
         URL = f"https://api.tdameritrade.com/v1/accounts/{self.account}"
@@ -27,26 +28,28 @@ class TDAmeritradeClient:
     def get_positions(self):
         return self.get_account_info()['positions']
 
-    def place_market_order(self, symbol, quantity):
+    def place_market_order(self, quantity, symbol):
         URL = f"https://api.tdameritrade.com/v1/accounts/{self.account}/orders"
         params = {
-            "orderType": "MARKET",
-            "session": "NORMAL",
-            "duration": "DAY",
-            "orderStrategyType": "SINGLE",
-            "orderLegCollection": [
-                {
-                    "instruction": "Buy",
-                    "quantity": quantity,
-                    "instrument": {
-                        "symbol": f"{symbol}",
-                        "assetType": "EQUITY"
-                    }
-                }
-            ]
-        }
+                  "orderType": "MARKET",
+                  "session": "NORMAL",
+                  "duration": "DAY", 
+                  "orderStrategyType": "SINGLE",
+                  "orderLegCollection": 
+                      [
+                          {
+                           "instruction": "Buy", 
+                           "quantity": quantity, 
+                           "instrument": 
+                               {
+                                  "symbol": symbol, 
+                                  "assetType": "EQUITY"
+                               }
+                           }
+                       ]
+                  }
         response = self.session.post(URL, json=params)
-        return response.status_code
+        return response
 
     def cancel_order(self, orderid):
         URL = f"https://api.tdameritrade.com/v1/accounts/{account}/orders/{orderid}"
@@ -58,4 +61,10 @@ class TDAmeritradeClient:
         response = self.session.get(URL)
         response.raise_for_status()
         return response.json()
+
+    def get_quote(self, symbol):
+        URL = f"https://api.tdameritrade.com/v1/marketdata/{symbol}/quotes"
+        response = self.session.get(URL)
+        response.raise_for_status()
+        return response.json()[symbol]
 
