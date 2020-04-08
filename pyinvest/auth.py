@@ -38,12 +38,12 @@ def _get_auth_code(client_id, redirect, username, password):
     driver = webdriver.Firefox()     
     driver.get(url)
 
-    ubox = driver.find_element_by_id('username')
-    pbox = driver.find_element_by_id('password')
+    ubox = driver.find_element('id', 'username')
+    pbox = driver.find_element('id', 'password')
     ubox.send_keys(username)
     pbox.send_keys(password)
-    driver.find_element_by_id('accept').click()
-    driver.find_element_by_id('accept').click()
+    driver.find_element('id', 'accept').click()
+    driver.find_element('id', 'accept').click()
     
     while True:
         try:
