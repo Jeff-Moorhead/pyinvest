@@ -68,13 +68,13 @@ for asset in positions:
 
     if args.verbose:
         print(f"Symbol: {symbol}, Long quantity: {quantity}, Market value: {market_value}")
-        print(f"Current price: {current_price}, Average price: {avg_price}")
-        print(f"Day gain/loss: {current_profit}, {current_profit_pcnt}%")
-        print(f"Total gain/loss: {asset_profit}, {asset_profit_pcnt}%")
-        print(f"Current allocation: {real_allocation}%, Ideal allocation: {ideal_allocation}%")
+        print(f"Current price: ${current_price}, Average price: ${avg_price}")
+        print(f"Day gain/loss: ${current_profit}, {current_profit_pcnt}%")
+        print(f"Total gain/loss: ${asset_profit}, {asset_profit_pcnt}%")
         print("------------------------------------------------------------------------------")
 
 total_profit = round(total_profit, 2)
 dec = (total_account_value / (total_account_value - total_profit)) - 1
 total_profit_pcnt = round(dec * 100, 2)
-print(f"Total profit: {total_profit}, {total_profit_pcnt}%\n")
+print(f"Total profit: ${total_profit}, {total_profit_pcnt}%\n")
+

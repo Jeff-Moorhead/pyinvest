@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+
+import argparse
+from getpass import getpass
+
+from pyinvest import auth, config, accounts
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--config', '-c', type=str, default='$HOME/config/pyinvest.json')
+args = parser.parse_args()
+
+password = getpass()
+
+info = config.Config(args.config)
+
+access_token = auth.authenticate(info.client_id, info.redirect, info.username, password)
+
+td_ameritrade = accounts.TDAmeritradeClient(access_token, info.account_id)
+account_info = td_ameritrade.get_account_info()
+positions = td_ameritrade.get_positions()
+allocations = {'VOO': 0.30, 'VYM': 0.05, 'VO': 0.15, 'VB': 0.1, 'VXUS': 0.25, 'VNQ': 0.1, 'BND': 0.05}
+
+total_account_value = account_info['currentBalances']['liquidationValue']
+available_cash = account_info['currentBalances']['cashAvailableForTrading']
+
+print('') # Blank line
+
+for asset in positions:
+    symbol = asset['instrument']['symbol']
+    current_quantity = asset['longQuantity']
+    current_price = round(asset['marketValue'] / current_quantity, 2)
+    market_value = round(asset['marketValue'], 2)
+    
+    if symbol == 'MMDA1':
+        continue
+
+    ideal_allocation = allocations[symbol]
+    ideal_allocation_pcnt = round(ideal_allocation * 100, 2)
+    real_allocation = round((market_value / total_account_value) * 100, 2)
+
+    print(f"Symbol: {symbol}")
+    print(f"Current allocation: {real_allocation}%, Ideal allocation: {ideal_allocation_pcnt}%")
+
+    if abs(ideal_allocation_pcnt - real_allocation) > 5:
+        # Figure out how to adjust allocations
+        ideal_value = total_account_value * ideal_allocation
+        ideal_shares = ideal_value // current_price
+    
+        print(f"--- Ideal value: ${ideal_value}, Current value: ${market_value}")
+        print(f"--- Ideal shares: {ideal_shares}, Current shares: {current_quantity}\n")
+    else:
+        print('')
+
