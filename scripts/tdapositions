@@ -36,7 +36,6 @@ print(f"Total account value: ${total_account_value}")
 print("\n")
 
 total_profit = 0
-ideal_allocations = {'VOO': 30, 'VYM': 5, 'VO': 15, 'VB': 10, 'VXUS': 25, 'VNQ': 10, 'BND': 5}
 
 if args.verbose:
     print("Positions")
@@ -61,8 +60,6 @@ for asset in positions:
     avg_price = round(asset['averagePrice'], 2)
     market_value = round(asset['marketValue'], 2)
 
-    ideal_allocation = ideal_allocations[symbol]
-    real_allocation = round((market_value / total_account_value) * 100, 2)
     current_profit = round(asset['currentDayProfitLoss'], 2)
     current_profit_pcnt = round(asset['currentDayProfitLossPercentage'], 2)
 
