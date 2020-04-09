@@ -18,7 +18,7 @@ access_token = auth.authenticate(info.client_id, info.redirect, info.username, p
 td_ameritrade = accounts.TDAmeritradeClient(access_token, info.account_id)
 account_info = td_ameritrade.get_account_info()
 positions = td_ameritrade.get_positions()
-allocations = {'VOO': 0.30, 'VYM': 0.05, 'VO': 0.15, 'VB': 0.1, 'VXUS': 0.25, 'VNQ': 0.1, 'BND': 0.05}
+allocations = info.allocations
 
 total_account_value = account_info['currentBalances']['liquidationValue']
 available_cash = account_info['currentBalances']['cashAvailableForTrading']
