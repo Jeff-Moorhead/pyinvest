@@ -9,8 +9,11 @@ Form data: grant_type, refresh_token, client_id
 
 import requests
 import urllib.parse as up
+
 from time import sleep
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.support import ui
 
 
 def authenticate(client_id, redirect, username, password):
@@ -38,13 +41,26 @@ def _get_auth_code(client_id, redirect, username, password):
     driver = webdriver.Firefox()     
     driver.get(url)
 
+    wait = ui.WebDriverWait(driver, 60)
+
     ubox = driver.find_element('id', 'username')
     pbox = driver.find_element('id', 'password')
     ubox.send_keys(username)
     pbox.send_keys(password)
     driver.find_element('id', 'accept').click()
     driver.find_element('id', 'accept').click()
-    
+    code = driver.find_element('id', 'smscode')
+    code.click()
+    wait.until(lambda driver: len(code.get_attribute('value')) == 6)
+    driver.find_element('id', 'accept').click()
+
+    try:
+        driver.find_element('id', 'accept').click()
+    except WebDriverException:
+        # This is kind of hacky. I think this exception is cause by a bug in Selenium.
+        # Catching the exception prevents the program from exiting.
+        pass
+
     while True:
         try:
             authentication_code = driver.current_url.split('code=')[1]

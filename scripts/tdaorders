@@ -5,8 +5,9 @@ from getpass import getpass
 from pyinvest import auth, config, accounts
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--quantity', '-q', type=int, action='append')
-parser.add_argument('--symbol', '-s', type=str, action='append')
+parser.add_argument('--quantity', '-q', type=int, action='append', required=True)
+parser.add_argument('--symbol', '-s', type=str, action='append', required=True)
+parser.add_argument('--instruction', '-i', type=str, action='append', required=True)
 parser.add_argument('--config', '-c', type=str, default='$HOME/config/pyinvest.json')
 args = parser.parse_args()
 
@@ -23,7 +24,7 @@ positions = td_ameritrade.get_positions()
 total_account_value = account_info['currentBalances']['liquidationValue']
 available_cash = account_info['currentBalances']['cashAvailableForTrading']
 
-for quantity, symbol in zip(args.quantity, args.symbol):
+for quantity, symbol, instruction in zip(args.quantity, args.symbol, args.instruction):
     quote = td_ameritrade.get_quote(symbol)
 
     current_price = quote['regularMarketLastPrice']
@@ -35,8 +36,8 @@ for quantity, symbol in zip(args.quantity, args.symbol):
         exit()
 
     try:
-        res = td_ameritrade.place_market_order(quantity, symbol)
-        print(f"Order for {quantity} share(s) of {symbol} placed successfully.")
+        res = td_ameritrade.place_market_order(quantity, symbol, instruction)
+        print(f"Order to {instruction.lower()} {quantity} share(s) of {symbol} placed successfully.")
     except requests.exceptions.RequestException as e:
         print("Something went wrong. Please try again.")
 
