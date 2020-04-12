@@ -42,12 +42,12 @@ for asset in positions:
     print(f"Current allocation: {real_allocation}%, Ideal allocation: {ideal_allocation_pcnt}%")
 
     if abs(ideal_allocation_pcnt - real_allocation) > 5:
-        # Figure out how to adjust allocations
-        ideal_value = total_account_value * ideal_allocation
-        ideal_shares = ideal_value // current_price
-    
-        print(f"--- Ideal value: ${ideal_value}, Current value: ${market_value}")
-        print(f"--- Ideal shares: {ideal_shares}, Current shares: {current_quantity}\n")
-    else:
-        print('')
+        print("---------- ATTENTION NEEDED ----------")
+
+    # Figure out how to adjust allocations
+    ideal_value = total_account_value * ideal_allocation
+    ideal_shares = ideal_value // current_price
+
+    print(f"--- Ideal value: ${ideal_value}, Current value: ${market_value}")
+    print(f"--- Ideal shares: {ideal_shares}, Current shares: {current_quantity}\n")
 
